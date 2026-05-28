@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/styles">
+        <file>app.qss</file>
+    </qresource>
+    <qresource prefix="/">
+        <file>icons/minimize.png</file>
+        <file>icons/close.png</file>
+        <file>icons/config.png</file>
+        <file>icons/app.ico</file>
+    </qresource>
+</RCC>
