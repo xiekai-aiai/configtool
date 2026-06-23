@@ -236,6 +236,8 @@ void MainWindow::on_btnSearchDev_clicked()
     //--------------------------------
 
     QByteArray msg = "DISCOVER_DEVICE";
+#if 0
+
     qint64 ret = m_socket->writeDatagram(
         msg,
         QHostAddress::Broadcast,
@@ -245,6 +247,34 @@ void MainWindow::on_btnSearchDev_clicked()
     {
         statusLab->setText("发送广播消息失败!");
         return;
+    }
+#endif
+    QList<QNetworkInterface> interfaces =
+        QNetworkInterface::allInterfaces();
+    for (const auto& iface : interfaces)
+    {
+        if (!(iface.flags() & QNetworkInterface::IsUp))
+            continue;
+
+        if (!(iface.flags() & QNetworkInterface::IsRunning))
+            continue;
+
+        for (const auto& entry : iface.addressEntries())
+        {
+            QHostAddress broadcast = entry.broadcast();
+
+            if (broadcast.isNull())
+                continue;
+
+            qDebug()
+                << iface.humanReadableName()
+                << broadcast.toString();
+
+            m_socket->writeDatagram(
+                msg,
+                broadcast,
+                kDiscoveryPort);
+        }
     }
 
     qDebug() << "broadcast sent";
